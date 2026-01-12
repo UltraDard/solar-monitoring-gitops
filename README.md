@@ -76,4 +76,4 @@ Pour la partie sous, j'ai rempli le tableau. C'est cher le cloud !
 Si j'avais plus de temps, je ferais :
 1. Une vraie base de données pour garder les infos plus longtemps.
 2. Sécuriser les mots de passe (avec des Secrets Kubernetes).
-3. Faire une interface web plus belle pour le simulateur.
+3. Faire une interface web plus belle pour le simulateur. 
