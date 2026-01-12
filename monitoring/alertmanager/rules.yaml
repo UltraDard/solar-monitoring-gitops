@@ -1,0 +1,58 @@
+groups:
+- name: solar_alerts
+  interval: 15s
+  rules:
+  # 1. Surchauffe panneau (> 65°C pendant 10 min)
+  - alert: SolarPanelOverheating
+    expr: solar_temperature_c{type="panel"} > 65
+    for: 10m
+    labels:
+      severity: critical
+      component: panel
+    annotations:
+      summary: "Panneau en surchauffe"
+      description: "Le panneau {{ $labels.panel_id }} de la ferme {{ $labels.farm_name }} dépasse 65°C"
+
+  # 2. Panne onduleur (status = 0)
+  - alert: InverterDown
+    expr: solar_inverter_status == 0
+    for: 1m
+    labels:
+      severity: critical
+      component: inverter
+    annotations:
+      summary: "Onduleur en panne"
+      description: "L'onduleur {{ $labels.inverter_id }} de la ferme {{ $labels.farm_name }} est à l'arrêt."
+
+  # 3. Production anormalement basse (< 50% du théorique - en utilisant l'efficacité comme proxy)
+  - alert: LowEfficiency
+    expr: solar_efficiency_percent < 50
+    for: 5m
+    labels:
+      severity: warning
+      component: farm
+    annotations:
+      summary: "Efficacité faible"
+      description: "L'efficacité de la ferme {{ $labels.farm_name }} est inférieure à 50%."
+
+  # 4. Perte de données capteur (absence > 5 min)
+  - alert: SensorDataLoss
+    expr: absent(solar_power_production_kw)
+    for: 5m
+    labels:
+      severity: critical
+      component: monitoring
+    annotations:
+      summary: "Perte de données"
+      description: "Aucune donnée reçue depuis plus de 5 minutes."
+
+  # 5. SLO breach : Disponibilité < 99.5%
+  - alert: SLOBreach
+    expr: avg_over_time(up{job="solar-simulator"}[1h]) < 0.995
+    for: 1m
+    labels:
+      severity: critical
+      component: slo
+    annotations:
+      summary: "SLO Non respecté"
+      description: "La disponibilité du simulateur est inférieure à 99.5% sur la dernière heure."

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solar-simulator
+  namespace: default
+  labels:
+    app: solar-simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solar-simulator
+  template:
+    metadata:
+      labels:
+        app: solar-simulator
+    spec:
+      containers:
+      - name: solar-simulator
+        image: solar-simulator:local
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"

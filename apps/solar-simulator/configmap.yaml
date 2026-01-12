@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: solar-simulator-config
+  namespace: default
+data:
+  # Placeholder for future configuration
+  ENV: "production"

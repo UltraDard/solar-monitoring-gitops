@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-json
+  namespace: default
+  labels:
+    dashboard: "true"
+data:
+  solar-dashboard.json: |-
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "gnetId": null,
+      "graphTooltip": 0,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "title": "Production Totale (kW)",
+          "type": "gauge",
+          "datasource": "Prometheus",
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+          "targets": [{ "expr": "sum(solar_power_watts) / 1000", "refId": "A" }],
+          "options": {
+             "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+             "showThresholdLabels": false,
+             "showThresholdMarkers": true
+          }
+        },
+        {
+          "title": "Disponibilité (%)",
+          "type": "stat",
+          "datasource": "Prometheus",
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+          "targets": [{ "expr": "avg(solar_inverter_status) * 100", "refId": "A" }]
+        },
+        {
+          "title": "Températures Panneaux",
+          "type": "heatmap",
+          "datasource": "Prometheus",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+          "targets": [{ "expr": "solar_panel_temperature_celsius", "refId": "A", "format": "heatmap" }]
+        },
+        {
+          "title": "Historique Production par Ferme",
+          "type": "timeseries",
+          "datasource": "Prometheus",
+          "gridPos": { "h": 10, "w": 24, "x": 0, "y": 8 },
+          "targets": [{ "expr": "sum(solar_power_watts) by (farm) / 1000", "legendFormat": "{{farm}}", "refId": "A" }]
+        },
+        {
+           "title": "Revenus Journaliers (€)",
+           "type": "barchart",
+           "datasource": "Prometheus",
+           "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
+           "targets": [{ "expr": "sum(solar_daily_revenue_euros) by (farm)", "legendFormat": "{{farm}}", "refId": "A" }]
+        },
+        {
+           "title": "Alertes Actives",
+           "type": "alertlist",
+           "datasource": "Prometheus",
+           "gridPos": { "h": 8, "w": 12, "x": 12, "y": 18 },
+           "options": { "showState": "alerting" }
+        }
+      ],
+      "refresh": "5s",
+      "schemaVersion": 30,
+      "style": "dark",
+      "tags": [],
+      "templating": { "list": [] },
+      "time": { "from": "now-1h", "to": "now" },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Solar Monitoring Dashboard",
+      "uid": "solar-dashboard-uid",
+      "version": 1,
+      "weekStart": ""
+    }
